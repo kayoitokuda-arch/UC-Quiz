@@ -1,0 +1,54 @@
+<div id="quiz-container">
+  <div id="step-1">
+    <label for="name">What is your name?</label><br>
+    <input type="text" id="name" placeholder="Your name" required>
+    <button onclick="nextStep()">Next</button>
+  </div>
+
+  <div id="step-2" style="display:none;">
+    <label>Are you ready? (y/n)</label><br>
+    <input type="text" id="ready" placeholder="y or n" maxlength="1" required>
+    <button onclick="submitQuiz()">Submit</button>
+  </div>
+
+  <div id="quiz-result" style="display:none;">
+    <p>Thanks for submitting!</p>
+  </div>
+</div>
+
+<script>
+  function nextStep() {
+    const name = document.getElementById('name').value.trim();
+    if(name === '') {
+      alert('Please enter your name');
+      return;
+    }
+    document.getElementById('step-1').style.display = 'none';
+    document.getElementById('step-2').style.display = 'block';
+  }
+
+  function submitQuiz() {
+    const ready = document.getElementById('ready').value.trim().toLowerCase();
+    if(ready !== 'y' && ready !== 'n') {
+      alert('Please enter y or n');
+      return;
+    }
+
+    const name = document.getElementById('name').value.trim();
+
+    // Send to Webflow Form
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('ready', ready);
+
+    fetch('https://your-webflow-site.com/form-endpoint', { // replace with your Webflow form endpoint
+      method: 'POST',
+      body: formData
+    }).then(() => {
+      document.getElementById('step-2').style.display = 'none';
+      document.getElementById('quiz-result').style.display = 'block';
+    }).catch(() => {
+      alert('Submission failed. Try again.');
+    });
+  }
+</script>
